@@ -20,7 +20,7 @@ export interface MigrationState {
   warnings: MigrationWarning[];
   downloadToken: string | null;
   error: string | null;
-  outputFileNames: string[];
+  outputFiles: Map<string, string>;
 }
 
 export function useMigration() {
@@ -33,7 +33,7 @@ export function useMigration() {
     warnings: [],
     downloadToken: null,
     error: null,
-    outputFileNames: [],
+    outputFiles: new Map(),
   });
 
   const upload = useCallback(async (file: File) => {
@@ -158,10 +158,12 @@ export function useMigration() {
           warnings: [...s.warnings, event as unknown as MigrationWarning],
         }));
       } else if (event.type === 'complete') {
+        const filesObj = event.files as Record<string, string> | undefined;
         setState(s => ({
           ...s,
           phase: 'preview',
           downloadToken: event.downloadToken as string,
+          outputFiles: filesObj ? new Map(Object.entries(filesObj)) : new Map(),
         }));
       } else if (event.type === 'error') {
         setState(s => ({
@@ -183,7 +185,7 @@ export function useMigration() {
       warnings: [],
       downloadToken: null,
       error: null,
-      outputFileNames: [],
+      outputFiles: new Map(),
     });
   }, []);
 

@@ -41,7 +41,13 @@ export async function POST(req: NextRequest) {
           send({ type: 'warning', ...warning });
         }
 
-        send({ type: 'complete', downloadToken, stepCount: result.steps.length });
+        // Include text file contents so the client can render the preview
+        const files: Record<string, string> = {};
+        for (const [path, content] of result.outputFiles) {
+          if (!content.startsWith('__BINARY__:')) files[path] = content;
+        }
+
+        send({ type: 'complete', downloadToken, stepCount: result.steps.length, files });
       } catch (err) {
         send({ type: 'error', message: err instanceof Error ? err.message : String(err) });
       } finally {

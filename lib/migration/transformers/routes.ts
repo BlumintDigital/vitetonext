@@ -40,7 +40,11 @@ export async function transformRoutes(
       const component = analysis.components.find(c => c.file === route.componentFile);
       const needsClient = component?.needsClientDirective ?? false;
 
-      const directive = needsClient ? "'use client';\n\n" : '';
+      // Don't double-add 'use client' if client-directive transformer already added it
+      const alreadyHasDirective =
+        sourceContent.trimStart().startsWith("'use client'") ||
+        sourceContent.trimStart().startsWith('"use client"');
+      const directive = needsClient && !alreadyHasDirective ? "'use client';\n\n" : '';
       pageContent = directive + sourceContent;
     } else {
       // Generate a stub page

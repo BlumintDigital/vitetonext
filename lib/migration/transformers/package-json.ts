@@ -41,9 +41,11 @@ export async function transformPackageJson(
     }
   }
 
-  // Add Next.js
+  // Add Next.js, remove Vite-era router
   const deps = (pkg.dependencies || {}) as Record<string, string>;
-  deps['next'] = '15.2.1';
+  deps['next'] = '^15.2.9';
+  delete deps['react-router-dom'];
+  delete deps['react-router'];
   pkg.dependencies = deps;
 
   // Add @types/node to devDeps

@@ -8,13 +8,13 @@ import { MigrationProgress } from '@/components/migration/MigrationProgress';
 import { PreviewShell } from '@/components/preview/PreviewShell';
 
 export default function Home() {
-  const { phase, file, analysis, steps, warnings, downloadToken, error, upload, migrate, reset } = useMigration();
+  const { phase, file, analysis, steps, warnings, downloadToken, outputFiles, error, upload, migrate, reset } = useMigration();
 
   // Preview phase needs full-screen layout
   if (phase === 'preview' && downloadToken) {
     return (
       <PreviewShell
-        outputFiles={new Map()} // placeholder — populated via session
+        outputFiles={outputFiles}
         downloadToken={downloadToken}
         warnings={warnings}
         onReset={reset}
