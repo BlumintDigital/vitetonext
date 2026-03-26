@@ -8,8 +8,11 @@ interface Session {
   expiresAt: number;
 }
 
-// Module-level singleton (survives across requests in a single process)
-const sessions = new Map<string, Session>();
+// Survive Next.js HMR in dev mode by anchoring to globalThis
+const gbl = globalThis as Record<string, unknown>;
+const sessions: Map<string, Session> =
+  (gbl.__migrationSessions as Map<string, Session>) ??
+  (() => { const m = new Map<string, Session>(); gbl.__migrationSessions = m; return m; })();
 
 const SESSION_TTL_MS = 10 * 60 * 1000; // 10 minutes
 

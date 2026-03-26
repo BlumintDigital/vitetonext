@@ -1,4 +1,4 @@
-import type { FileMap, MigrationResult, MigrationStep, MigrationWarning, StepEmitter } from '@/lib/migration/types';
+import type { FileMap, ProjectAnalysis, MigrationResult, MigrationStep, MigrationWarning, StepEmitter } from '@/lib/migration/types';
 import { analyzeProject } from './analyzers/project-analyzer';
 import { transformPackageJson } from './transformers/package-json';
 import { transformNextConfig } from './transformers/next-config';
@@ -17,7 +17,8 @@ export { analyzeProject };
 
 export async function migrateProject(
   files: FileMap,
-  onStep?: StepEmitter
+  onStep?: StepEmitter,
+  precomputedAnalysis?: ProjectAnalysis
 ): Promise<MigrationResult> {
   const steps: MigrationStep[] = [];
   const warnings: MigrationWarning[] = [];
@@ -39,7 +40,7 @@ export async function migrateProject(
   };
 
   // ── Phase 1: Analyze ────────────────────────────────────────────────────
-  const analysis = await analyzeProject(files);
+  const analysis = precomputedAnalysis ?? await analyzeProject(files);
 
   // ── Phase 2: Transform pipeline ─────────────────────────────────────────
   const transformers = [

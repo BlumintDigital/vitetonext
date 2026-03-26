@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
       try {
         const result = await migrateProject(session.files, (step) => {
           send({ type: 'step', ...step });
-        });
+        }, session.analysis);
 
         const downloadToken = uuidv4();
         setSessionOutput(sessionId, result.outputFiles, downloadToken);

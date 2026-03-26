@@ -84,9 +84,18 @@ export function useMigration() {
         body: JSON.stringify({ sessionId }),
       });
 
-      if (!res.ok || !res.body) {
-        throw new Error('Migration request failed');
+      if (!res.ok) {
+        let msg = `Migration failed (${res.status})`;
+        try {
+          const text = await res.text();
+          if (text) {
+            try { msg = (JSON.parse(text) as { error?: string }).error ?? text; }
+            catch { msg = text; }
+          }
+        } catch { /* ignore */ }
+        throw new Error(msg);
       }
+      if (!res.body) throw new Error('Migration failed: no response stream');
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
