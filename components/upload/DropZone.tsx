@@ -1,12 +1,14 @@
 'use client';
 
 import { useCallback, useState } from 'react';
+import { GitHubImport } from './GitHubImport';
 
 interface DropZoneProps {
   onFile: (file: File) => void;
+  onGitHubFile: (file: File, repoLabel: string) => void;
 }
 
-export function DropZone({ onFile }: DropZoneProps) {
+export function DropZone({ onFile, onGitHubFile }: DropZoneProps) {
   const [isDragging, setIsDragging] = useState(false);
 
   const handleFile = useCallback((file: File) => {
@@ -87,9 +89,12 @@ export function DropZone({ onFile }: DropZoneProps) {
         </div>
       </label>
 
+      {/* GitHub import */}
+      <GitHubImport onFile={onGitHubFile} />
+
       {/* Feature pills */}
-      <div className="flex flex-wrap justify-center gap-2 mt-8">
-        {['React Router → App Router', 'ENV vars migrated', 'use client auto-detected', 'ZIP export'].map(f => (
+      <div className="flex flex-wrap justify-center gap-2 mt-6">
+        {['React Router → App Router', 'ENV vars migrated', 'use client auto-detected', 'GitHub import', 'ZIP export'].map(f => (
           <span key={f} className="px-3 py-1 rounded-full bg-[#0f1629] border border-[#1e293b] text-[#475569] text-sm">
             ✓ {f}
           </span>

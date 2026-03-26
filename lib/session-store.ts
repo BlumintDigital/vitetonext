@@ -51,6 +51,8 @@ export function setSessionOutput(id: string, outputFiles: FileMap, downloadToken
   if (session) {
     session.outputFiles = outputFiles;
     session.downloadToken = downloadToken;
+    // Completed sessions last 1 hour so history download links stay valid longer
+    session.expiresAt = Date.now() + 60 * 60 * 1000;
   }
 }
 
